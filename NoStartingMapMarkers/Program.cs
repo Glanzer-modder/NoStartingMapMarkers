@@ -26,10 +26,11 @@ namespace NoStartingMapMarkers
 
             foreach (var placedObjectGetter in state.LoadOrder.PriorityOrder.PlacedObject().WinningContextOverrides(state.LinkCache))
             {
-                // Check for Map Marker records with the 'visible' flag enabled
+                // Check for Map Marker records with the 'visible' flag enabled.
                 if (placedObjectGetter.Record.Base.FormKey == mapMarkerFormKey && placedObjectGetter.Record.MapMarker != null && placedObjectGetter.Record.MapMarker.Flags.HasFlag(MapMarker.Flag.Visible))
                 {
                     IPlacedObject copiedPlacedObject = placedObjectGetter.GetOrAddAsOverride(state.PatchMod);
+                    // Turn visible flag off but leave all other flags untouched
                     if (copiedPlacedObject.MapMarker != null) copiedPlacedObject.MapMarker.Flags &= ~MapMarker.Flag.Visible;
                 }
             };
