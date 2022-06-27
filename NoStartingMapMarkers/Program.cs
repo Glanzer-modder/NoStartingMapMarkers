@@ -33,7 +33,7 @@ namespace NoStartingMapMarkers
                     // Turn visible flag off but leave all other flags untouched
                     if (copiedPlacedObject.MapMarker != null) copiedPlacedObject.MapMarker.Flags &= ~MapMarker.Flag.Visible;
                 }
-            };
+            }
 
         }
     }
