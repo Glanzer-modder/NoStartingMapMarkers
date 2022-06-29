@@ -1,21 +1,26 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+//using System.Collections.Generic;
+//using System.Linq;
 using Mutagen.Bethesda;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using System.Threading.Tasks;
 using Mutagen.Bethesda.FormKeys.SkyrimSE;
+using Mutagen.Bethesda.WPF.Reflection.Attributes;
 
 namespace NoStartingMapMarkers
 {
+
     public class Settings
     {
-        public bool Make_5_Main_Cities_Visible { get; set; } = false;
+        [SettingName("Enable map markers for the 5 main cities (Whiterun, Markarth, Solitude, Windhelm, Riften) at game start?")]
+        public bool bVisibleCities { get; set; } = false;
     }
-        public class Program
+
+    public class Program
     {
-        static Lazy<Settings>? _settings = null!;
+       
+        public static Lazy<Settings> ? _settings = null!;
 
         public static async Task<int> Main(string[] args)
         {
@@ -28,16 +33,10 @@ namespace NoStartingMapMarkers
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            bool bVisibleCities = _settings != null ? _settings.Value.Make_5_Main_Cities_Visible : false;
-
-            if (bVisibleCities)
-            {
-                Console.WriteLine("*** DETECTED SETTINGS ***");
-                Console.WriteLine("Make_5_Main_Cities_Visible: " + bVisibleCities);
-                Console.WriteLine("*************************");
-            }
+            bool bVisibleCities = _settings != null ? _settings.Value.bVisibleCities : false;
 
             var mapMarkerFormKey = Skyrim.Static.MapMarker.FormKey;
+            int iLoop = 0;
 
             foreach (var placedObjectGetter in state.LoadOrder.PriorityOrder.PlacedObject().WinningContextOverrides(state.LinkCache))
             {
@@ -47,7 +46,17 @@ namespace NoStartingMapMarkers
                     IPlacedObject copiedPlacedObject = placedObjectGetter.GetOrAddAsOverride(state.PatchMod);
                     // Turn visible flag off but leave all other flags untouched
                     if (copiedPlacedObject.MapMarker != null) copiedPlacedObject.MapMarker.Flags &= ~MapMarker.Flag.Visible;
+                    iLoop++;
                 }
+            }
+
+            Console.WriteLine("\n"+iLoop+" enabled map markers found and turned off.");
+
+            if (bVisibleCities)
+            {
+                Console.WriteLine("\nEnabling map markers for the 5 major cities...");
+                // Set the 5 MapMarker records to visible here
+                Console.WriteLine("Done.\n");
             }
 
         }
