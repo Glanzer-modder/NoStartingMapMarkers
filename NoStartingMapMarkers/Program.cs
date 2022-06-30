@@ -57,40 +57,55 @@ namespace NoStartingMapMarkers
             {
                 Console.WriteLine("\nEnabling map markers for the 5 major cities...");
 
+                // Markarth
                 var someItemLink = new FormLink<PlacedObject>(FormKey.Factory("01C38A:Skyrim.esm"));
                 if (someItemLink.TryResolve(state.LinkCache, out var itemRecord1))
                 {
                     if (itemRecord1.MapMarker != null) itemRecord1.MapMarker.Flags |= MapMarker.Flag.Visible;
                     Console.WriteLine("Markarth: Success");
                 }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Markarth: FAILURE");
+                    Console.ResetColor();
+                }
 
+                // Whiterun
                 someItemLink = new FormLink<PlacedObject>(FormKey.Factory("0162CE:Skyrim.esm"));
                 if (someItemLink.TryResolve(state.LinkCache, out var itemRecord2))
                 {
                     if (itemRecord2.MapMarker != null) itemRecord2.MapMarker.Flags |= MapMarker.Flag.Visible;
                     Console.WriteLine("Whiterun: Success");
                 }
-
+                else Console.WriteLine("Whiterun: FAILURE");
+ 
+                // Solitude
                 someItemLink = new FormLink<PlacedObject>(FormKey.Factory("04D0F4:Skyrim.esm"));
                 if (someItemLink.TryResolve(state.LinkCache, out var itemRecord3))
                 {
                     if (itemRecord3.MapMarker != null) itemRecord3.MapMarker.Flags |= MapMarker.Flag.Visible;
                     Console.WriteLine("Solitude: Success");
                 }
+                else Console.WriteLine("Solitude: FAILURE");
 
+                // Windhelm
                 someItemLink = new FormLink<PlacedObject>(FormKey.Factory("038436:Skyrim.esm"));
                 if (someItemLink.TryResolve(state.LinkCache, out var itemRecord4))
                 {
                     if (itemRecord4.MapMarker != null) itemRecord4.MapMarker.Flags |= MapMarker.Flag.Visible;
                     Console.WriteLine("Windhelm: Success");
                 }
+                else Console.WriteLine("Windhelm: FAILURE");
 
+                // Riften
                 someItemLink = new FormLink<PlacedObject>(FormKey.Factory("01C390:Skyrim.esm"));
                 if (someItemLink.TryResolve(state.LinkCache, out var itemRecord5))
                 {
                     if (itemRecord5.MapMarker != null) itemRecord5.MapMarker.Flags |= MapMarker.Flag.Visible;
                     Console.WriteLine("Riften: Success");
                 }
+                else Console.WriteLine("Riften: FAILURE");
 
                 Console.WriteLine("Done.\n");
             }
