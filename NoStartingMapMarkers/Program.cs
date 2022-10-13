@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Mutagen.Bethesda.FormKeys.SkyrimSE;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 using Mutagen.Bethesda.Plugins;
+using Noggog;
 
 namespace NoStartingMapMarkers
 {
@@ -38,20 +39,33 @@ namespace NoStartingMapMarkers
 
             var mapMarkerFormKey = Skyrim.Static.MapMarker.FormKey;
             int iLoop = 0;
+            int iLoop2 = 0;
 
             foreach (var placedObjectGetter in state.LoadOrder.PriorityOrder.PlacedObject().WinningContextOverrides(state.LinkCache))
             {
                 // Check for Map Marker records with the 'visible' flag enabled.
                 if (placedObjectGetter.Record.Base.FormKey == mapMarkerFormKey && placedObjectGetter.Record.MapMarker != null && placedObjectGetter.Record.MapMarker.Flags.HasFlag(MapMarker.Flag.Visible))
                 {
+                    if (EnumExt.HasFlag(placedObjectGetter.Record.MajorRecordFlagsRaw, (int)SkyrimMajorRecord.SkyrimMajorRecordFlag.InitiallyDisabled))
+                    {
+                        iLoop2++;
+                        continue;
+                    }
+
                     IPlacedObject copiedPlacedObject = placedObjectGetter.GetOrAddAsOverride(state.PatchMod);
+                    // Disregard if the record is set to Initially Disabled
+
                     // Turn visible flag off but leave all other flags untouched
-                    if (copiedPlacedObject.MapMarker != null) copiedPlacedObject.MapMarker.Flags &= ~MapMarker.Flag.Visible;
-                    iLoop++;
+                    if (copiedPlacedObject.MapMarker != null)
+                    {
+                        copiedPlacedObject.MapMarker.Flags &= ~MapMarker.Flag.Visible;
+                        iLoop++;
+                    }
                 }
             }
 
-            Console.WriteLine("\n"+iLoop+" enabled map markers found and turned off.");
+            Console.WriteLine("\n"+iLoop+" enabled map markers were found and turned off.");
+            Console.WriteLine("\n"+iLoop2+" initially disabled map markers were found and left untouched.");
 
             if (bVisibleCities)
             {
